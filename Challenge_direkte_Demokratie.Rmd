@@ -1,0 +1,323 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+                                        # Fragestellung: Wieso gestalltet sich die Finanzierung der AHV so schwierig?
+                                        
+                                        
+                                        
+                                        
+                                                  # Packete importieren und Daten einlesen und vorbereiten
+# Packete importieren
+```{r}
+library(esquisse)
+library(ggplot2)
+library(tidyverse)
+library(magrittr)
+library(rmarkdown)
+```
+
+# Daten einlesen
+```{r}
+data_csv <- read.csv2("DatensatzAbstimmungen.csv", na = "NA")
+```
+
+# Datum Spalte zu Datentyp "date" ändern
+```{r}
+data_csv <- data_csv%>%
+  mutate(datum=as.Date(datum, "%d.%m.%Y"))
+
+class(data_csv$datum)
+```
+
+# Datensatz nur mit AHV Abstimmungen erstellen
+```{r}
+ahv <- subset(data_csv, anr == 99 | anr == 280 | anr == 281 |anr == 352 |anr == 423 | anr == 444 | anr == 469 |anr == 481 |anr == 489.1| anr == 280 | anr == 281 |anr == 352 |anr == 99 | anr == 280 | anr == 489.2  | anr == 507 | anr == 508 | anr == 523 |anr == 536 |anr == 594 | anr == 606 | anr == 614 |anr == 627 |anr == 101 | anr == 115 | anr == 144 |anr == 401 |anr == 422)
+```
+
+# Bei AHV Datensatz Spalte annahme 1,0 durch Worte ersetzen
+```{r}
+ahv$annahme[ahv$annahme == "0"] <- "Abgelehnt"
+ahv$annahme[ahv$annahme == "1"] <- "Angenommen"
+```
+
+
+
+
+
+
+
+
+
+                                                    # Grafik 1 (Blog): Aufteilung der Themen in den AHV-Abstimmungen
+
+# Data Frame mit benötigten Kateogiren erstellen (im Vorfeld entschieden, was zu welcher Karegorie gehört. Noch aufschreiben)
+```{r}
+kategorien <- c("Finanzierung","Revision","Rentenalter", "Anderes")
+Anzahl <- c(11,4,4,5)
+
+dfKategorien <- data.frame(kategorien,Anzahl)
+```
+
+# Plot erstellen
+```{r}
+ggplot(dfKategorien) +
+ aes(x = kategorien, weight = Anzahl) +
+ geom_bar(fill = "#0C4C8A") +
+ labs(x = " ", y = " ") +
+  labs(
+    title = "Aufteilung der Themen in den AHV-Abstimmungen")+
+  theme(plot.title = element_text(size = 15L, hjust = 0.5))+
+ theme_minimal()
+```
+
+
+
+
+
+
+
+                                                        # Grafik 2: Alle Abstimmungen über die AHV seit 1848
+
+# DataFrame nur mit Datum, Abstimmung und Ergebnis
+```{r}
+ahv_Ergebnisse <- subset(ahv, select=c(datum,titel_kurz_d,annahme,volkja.proz))
+```
+# Plot erstellen
+```{r}
+ggplot(ahv_Ergebnisse) +
+ aes(x = datum, fill = annahme) +
+ geom_histogram(bins = 31L) +
+ scale_fill_hue(direction = 1) +
+ labs(x = " ", y = "Anzahl Abstimmungen") +
+ theme_minimal()+
+ scale_fill_manual('Ergebnis', values=c('#0C4C8A', 'tan2'))+
+   labs(
+    title = "Alle Abstimmungen über die AHV seit 1848")+
+  theme(plot.title = element_text(size = 15L, hjust = 0.5))
+```
+
+
+
+
+
+
+                               # Abstimmungen mit Militär in Verbindung mit Finanzierung und Medien mit Finanzierung suchen
+                               
+# Zeilen suchen wo d1e1 == 3 oder d1e1 == 12 (3= Sicherheitspolitik, 12 = Kultur, Bldung, Medien)
+```{r}
+d1e1_3_oder_12 <- subset(data_csv, d1e1 == 3 | d1e1 == 12)
+```
+
+# Zeilen suchen wo d1e2 == 3.2(Militär) oder 12.5(Medien)
+```{r}
+d1e2_3.2_oder_12.5 <- subset(d1e1_3_oder_12, d1e2 == 3.2 | d1e2 == 12.5)
+```
+
+# Was hat davon (Data Frame d1e2_3.2_oder_12.5) mit Finanzen zu tun?
+```{r}
+abstimmungen_militär_finanzierung <- subset(d1e2_3.2_oder_12.5, d2e1 == 6)
+
+# Hier als Ergebnis nur Abstimmungen mit Verbindung zum Militär rausgekommen, deshalb Name darauf geändert.
+```
+
+# Filtern nach Abstimmungen mit Medien
+```{r}
+d1e2_12.5 <- subset(d1e1_3_oder_12, d1e2 == 12.5)
+```
+
+
+
+
+
+
+                                              # Grafik 4: Abstimmungsergebnisse im Bereich der AHV-Finanzierung
+                                                    
+# Data Frame mit AHV-Abstimmungen im Bereich Finanzierung erstellen
+```{r}
+ahv_Finanzierung <- subset(ahv, anr==401 |anr == 481 | anr == 489.1 | anr == 489.2 | anr == 508 | anr == 523 | anr == 594 | anr == 606 | anr == 614 | anr == 627)
+```
+
+# Wie oft abgelehnt / angenommen?
+```{r}
+zahlen_ang_abg <- ahv_Finanzierung %>%
+  group_by(annahme) %>%
+  count()
+```
+
+# Plot erstellen
+```{r}
+ggplot(zahlen_ang_abg, aes(x="", y=n, fill=annahme))+
+  geom_bar(stat="identity", width = 1)+
+  coord_polar("y",start=0)+
+  geom_text(aes(label = paste0((round(100/10)*n), "%")), position = position_stack(vjust=0.5)) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_classic() +
+  theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank()) +
+  scale_fill_manual(values=c("#0C4C8A","tan2"))+
+    labs(
+    title = "Abstimmungsergebnisse im Bereich der AHV-Finanzierung")+
+  theme(plot.title = element_text(size = 15L, hjust = 0.5))
+```
+
+
+
+
+
+
+
+
+
+                                             # Grafik 5: Abstimmungsergebnisse im Bereich Medien in Verbindung mit Finanzierung
+# Pie Chart Medien in Verbindung mit Finanzierungen
+```{r}
+# DataFrame erstellen mit Abgelehnt:2 und Angenommen:2
+annahme <- c("Angenommen", "Abgelehnt")
+n <- c(2,2)
+dfMedien <- data.frame(annahme,n)
+
+```
+
+```{r}
+ggplot(dfMedien, aes(x="", y=n, fill=annahme))+
+  geom_bar(stat="identity", width = 1)+
+  coord_polar("y",start=0)+
+  geom_text(aes(label = paste0(round((100/4)*n), "%")), position = position_stack(vjust=0.5)) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_classic() +
+  theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank()) +
+  scale_fill_manual(values=c("#0C4C8A","tan2"))+
+    labs(
+    title = "Abstimmungsergebnisse im Bereich Medien in Verbindung mit Finanzierung")+
+  theme(plot.title = element_text(size = 15L, hjust = 0.2))
+```
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                                            # Grafik 6: Abstimmungsergebnisse im Bereich Militär in Verbindung mit Finanzierung
+                  
+# Pie Chart Militär in Verbindung mit Finanzierungen
+```{r}
+# DataFrame erstellen mit Abgelehnt:2 und Angenommen:2
+annahme <- c("Angenommen", "Abgelehnt")
+n <- c(7,4)
+dfMilitär <- data.frame(annahme,n)
+
+```
+```{r}
+ggplot(dfMilitär, aes(x="", y=n, fill=annahme))+
+  geom_bar(stat="identity", width = 1)+
+  coord_polar("y",start=0)+
+  geom_text(aes(label = paste0(round((100/11)*n), "%")), position = position_stack(vjust=0.5)) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_classic() +
+  theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank()) +
+  scale_fill_manual(values=c("#0C4C8A","tan2"))+
+    labs(
+    title = "Abstimmungsergebnisse im Bereich Militär in Verbindung mit Finanzierung")+
+  theme(plot.title = element_text(size = 15L, hjust = 0.2))
+```
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+
+
+                             # Grafik 1 (Demokratie):  bei Erklärung Demokratie: Übersicht in welcher Rechtsform wie oft abgestimmt wurde
+
+```{r}
+data_csv$rechtsform[data_csv$rechtsform == "1"] <- "Obligatorisches Referendum"
+data_csv$rechtsform[data_csv$rechtsform == "2"] <- "Fakultatives Referendum"
+data_csv$rechtsform[data_csv$rechtsform == "3"] <- "Volksinitiative"
+data_csv$rechtsform[data_csv$rechtsform == "4"] <- "Direkter Gegenentwurf einer Volksinitiative"
+data_csv$rechtsform[data_csv$rechtsform == "5"] <- "Stichfrage"
+```
+
+
+
+
+```{r}
+ggplot(data_csv) +
+  aes(x = rechtsform, fill = rechtsform) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(`Direkter Gegenentwurf einer Volksinitiative` = "#A50026",
+    `Fakultatives Referendum` = "#F88D51",
+    `Obligatorisches Referendum` = "#E6D386",
+    Stichfrage = "#8FC3DD",
+    Volksinitiative = "#313695")
+  ) +
+  labs(y = "Anzahl Initiativen", fill = "Rechtsform") +
+  theme_minimal() +
+  theme(
+    axis.title.y = element_text(size = 12L,
+    face = "bold")
+  )+
+    labs(
+    title = "Rechtsform der Initiativen seit 1848")+
+  theme(plot.title = element_text(size = 15L, hjust = 0.5))
+```
+
+
+
+
+
+
+
+
+                                  # Grafik 2 (Demokratie): Alle Volksinitiativen verteilt auf die Jahre seit 1848
+```{r}
+initiativen <-  subset(data_csv, rechtsform == "Volksinitiative")
+```
+# Bei AHV Datensatz Spalte annahme 1,0 durch Worte ersetzen
+```{r}
+initiativen$annahme[initiativen$annahme == "0"] <- "Abgelehnt"
+initiativen$annahme[initiativen$annahme == "1"] <- "Angenommen"
+```
+
+# Plot erstellen
+```{r}
+ggplot(initiativen) +
+  aes(x = datum, fill = annahme) +
+  geom_histogram(bins = 30L) +
+  scale_fill_manual(
+    values = c(Abgelehnt = "#0C4C8A",
+    Angenommen = "tan2")
+  ) +
+  labs(
+    x = " ",
+    y = "Anzahl Volksinitiativen",
+    title = "Volksinitiativen seit 1848",
+    fill = "Ergebnis"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+
+
+
