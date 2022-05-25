@@ -33,7 +33,7 @@ class(data_csv$datum)
 
 # Datensatz nur mit AHV Abstimmungen erstellen
 ```{r}
-ahv <- subset(data_csv, anr == 99 | anr == 280 | anr == 281 |anr == 352 |anr == 423 | anr == 444 | anr == 469 |anr == 481 |anr == 489.1| anr == 280 | anr == 281 |anr == 352 |anr == 99 | anr == 280 | anr == 489.2  | anr == 507 | anr == 508 | anr == 523 |anr == 536 |anr == 594 | anr == 606 | anr == 614 |anr == 627 |anr == 101 | anr == 115 | anr == 144 |anr == 401 |anr == 422)
+ahv <- subset(data_csv, anr == 99 |anr == 101 | anr == 115 | anr == 144 | anr == 280 | anr == 281 |anr == 352 |anr == 401 | anr == 423 | anr == 444 | anr == 469 |anr == 481 |anr == 489.1   | anr == 489.2  | anr == 507 | anr == 508 | anr == 523 |anr == 536 |anr == 594 | anr == 606 | anr == 614 |anr == 627 |anr == 401 |anr == 422)
 ```
 
 # Bei AHV Datensatz Spalte annahme 1,0 durch Worte ersetzen
@@ -317,6 +317,147 @@ ggplot(initiativen) +
   )
 ```
 
+
+
+
+
+
+
+
+                                                             # Überprüfung der Theorien
+                                                             
+# Data Frame mit Medien- Militär- und AHV- Finanzierungsabstimmungen erstellen
+```{r}
+finanzierungen <- subset(data_csv, anr == 16 | anr == 18 | anr == 86 |anr == 131 | anr == 161 | anr == 162 |anr == 181 |  anr == 393 | anr == 401 |anr == 481 |anr == 489.1  | anr == 489.2 | anr == 508 | anr == 523 |anr == 594 | anr == 606 | anr == 614 |anr == 627 |  anr == 427 | anr == 471 | anr == 584 | anr == 635|  anr == 595 | anr == 617 | anr == 654)
+```
+
+# Data Frame Kürzen
+```{r}
+finanzierungen_gekuerzt <- subset(finanzierungen, select=c(anr,datum,titel_kurz_d,d1e1,annahme,br.pos,bv.pos,nr.pos))
+```
+
+# br.pos als int. speichern
+```{r}
+#finanzierungen_gekuerzt$br.pos <- as.factor(finanzierungen_gekuerzt$br.pos )
+```
+
+
+
+# Kategorien setzen gemäss Spalte d1e1
+```{r}
+finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "3"] <- "Militaer"
+finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "12"] <- "Medien"
+finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "10"] <- "AHV"
+finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "6"] <- "AHV"
+finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "7"] <- "AHV"
+finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "4"] <- "AHV"
+```
+
+# Bei Position Bundesrat Zahlen mit Wörtern ersetzen
+```{r}
+finanzierungen_gekuerzt$br.pos[finanzierungen_gekuerzt$br.pos == "1"] <- "Befürwortend"
+finanzierungen_gekuerzt$br.pos[finanzierungen_gekuerzt$br.pos == "2"] <- "Ablehnend"
+finanzierungen_gekuerzt$br.pos[finanzierungen_gekuerzt$br.pos == "."] <- "Keine Angaben"
+```
+
+# Bei Position Parlament Zahlen mit Wörtern ersetzen
+```{r}
+finanzierungen_gekuerzt$bv.pos[finanzierungen_gekuerzt$bv.pos == "1"] <- "Befürwortend"
+finanzierungen_gekuerzt$bv.pos[finanzierungen_gekuerzt$bv.pos == "2"] <- "Ablehnend"
+```
+
+# Bei Position Nationalrat Zahlen mit Wörtern ersetzen
+```{r}
+finanzierungen_gekuerzt$nr.pos[finanzierungen_gekuerzt$nr.pos == "1"] <- "Befürwortend"
+finanzierungen_gekuerzt$nr.pos[finanzierungen_gekuerzt$nr.pos == "2"] <- "Ablehnend"
+```
+
+
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = d1e1, fill = br.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2",
+    `Keine Angaben` = "grey")
+  ) +
+  labs(
+    x = "bbbb",
+    y = "ccc",
+    title = "Position Bundesrat zu Absimmungen in den Bereichen AHV, Medien, Militär im Zusammenhang mit Finanzen",
+    fill = "Position Bundesrat"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+
+
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = d1e1, fill = bv.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2")
+  ) +
+  labs(
+    x = "bbb",
+    y = "vvv",
+    title = "Position Parlament zu Absimmungen in den Bereichen AHV, Medien, Militär im Zusammenhang mit Finanzen",
+    fill = "Position Parlament"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+
+
+
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = d1e1, fill = nr.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2")
+  ) +
+  labs(
+    x = "tttt",
+    y = "ddd",
+    title = "Position Nationalrat zu Absimmungen in den Bereichen AHV, Medien, Militär im Zusammenhang mit Finanzen",
+    fill = "Position Nationalrat"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
 
 
 
