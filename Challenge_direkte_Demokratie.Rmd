@@ -310,9 +310,9 @@ ggplot(finanzierungen_gekuerzt) +
     `Enthaltend` = "grey")
   ) +
   labs(
-    x = "Entscheidung vom Volk",
+    x = "Entscheidung des Volkes",
     y = "Anzahl Abstimmungen",
-    title = "TITEL",
+    title = "Analyse der Haltung des Bundesrates",
     fill = "Position Bundesrat"
   ) +
   theme_minimal() +
@@ -321,7 +321,7 @@ ggplot(finanzierungen_gekuerzt) +
     face = "bold",
     hjust = 0.5),
     axis.title.y = element_text(size = 12L,
-    face = "italic"),
+    face = "bold"),
     axis.title.x = element_text(size = 12L,
     face = "bold")
   ) +
@@ -345,9 +345,9 @@ ggplot(finanzierungen_gekuerzt) +
     Befürwortend = "tan2")
   ) +
   labs(
-    x = "Entscheidung vom Volk",
+    x = "Entscheidung des Volkes",
     y = "Anzahl Abstimmungen",
-    title = "Titel",
+    title = "Analyse der Haltung des Parlaments",
     fill = "Position Parlament"
   ) +
   theme_minimal() +
@@ -376,9 +376,9 @@ ggplot(finanzierungen_gekuerzt) +
     Befürwortend = "tan2")
   ) +
   labs(
-    x = "Entscheidung vom Volk",
+    x = "Entscheidung des Volkes",
     y = "Anzahl Abstimmungen",
-    title = "Titel",
+    title = "Analyse der Haltung des Nationalrates",
     fill = "Position Nationalrat"
   ) +
   theme_minimal() +
@@ -393,6 +393,19 @@ ggplot(finanzierungen_gekuerzt) +
   ) +
   facet_wrap(vars(d1e1))
 ```
+
+# Kontrollieren, ob Initiative nie angenommen, wenn Bundesrat dagegen
+```{r}
+bundesratDagegen <- filter(finanzierungen, br.pos == 2)
+```
+```{r}
+test_finanzierungen <- bundesratDagegen %>%
+  group_by(annahme) %>%
+  count()
+```
+
+
+
 
 
 
