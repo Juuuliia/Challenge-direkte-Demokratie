@@ -151,7 +151,7 @@ zahlen_ang_abg <- ahv_Finanzierung %>%
 ggplot(zahlen_ang_abg, aes(x="", y=n, fill=annahme))+
   geom_bar(stat="identity", width = 1)+
   coord_polar("y",start=0)+
-  geom_text(aes(label = paste0((round(100/10)*n), "%")), position = position_stack(vjust=0.5)) +
+  geom_text(aes(label = paste0((round(100/10)*n), "%")), position = position_stack(vjust=0.5),color="white") +
   labs(x = NULL, y = NULL, fill = NULL) +
   theme_classic() +
   theme(axis.line = element_blank(),
@@ -185,7 +185,7 @@ dfMedien <- data.frame(annahme,n)
 ggplot(dfMedien, aes(x="", y=n, fill=annahme))+
   geom_bar(stat="identity", width = 1)+
   coord_polar("y",start=0)+
-  geom_text(aes(label = paste0(round((100/4)*n), "%")), position = position_stack(vjust=0.5)) +
+  geom_text(aes(label = paste0(round((100/4)*n), "%")), position = position_stack(vjust=0.5),color = "white") +
   labs(x = NULL, y = NULL, fill = NULL) +
   theme_classic() +
   theme(axis.line = element_blank(),
@@ -218,7 +218,7 @@ dfMilitär <- data.frame(annahme,n)
 ggplot(dfMilitär, aes(x="", y=n, fill=annahme))+
   geom_bar(stat="identity", width = 1)+
   coord_polar("y",start=0)+
-  geom_text(aes(label = paste0(round((100/11)*n), "%")), position = position_stack(vjust=0.5)) +
+  geom_text(aes(label = paste0(round((100/11)*n), "%")), position = position_stack(vjust=0.5),color="white") +
   labs(x = NULL, y = NULL, fill = NULL) +
   theme_classic() +
   theme(axis.line = element_blank(),
@@ -406,6 +406,142 @@ test_finanzierungen <- bundesratDagegen %>%
 
 
 
+
+
+                                                                     # Grafik 10
+
+
+```{r}
+ablehnung <- subset(ahv_Ergebnisse, annahme == "Abgelehnt") 
+ablehnung$volkja.proz_n <-as.numeric(ablehnung$volkja.proz)
+```
+
+```{r}
+ggplot(ablehnung) +
+  aes(
+    x = volkja.proz_n,
+    y = titel_kurz_d,
+    colour = volkja.proz_n
+  ) +
+  geom_point(shape = "circle", size = 4L) +
+  scale_color_gradient(low = "#0C4C8A", high = "tan1") +
+  labs(
+    x = "Prozentualer Anteil der Ja-Stimmen",
+    y = " ",
+    title = "Prozentualer Anteil Ja-Stimmen bei abgelehnten AHV-Initiativen",
+    color = "Prozentanteil"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                     # Grafik 11
+
+
+# Data Frame erstellen mit Haltung der Parteien zu AHV Abstimmungen in Verbindung mit Finanzierungen
+```{r}
+ahv_finanzierungen_parteien <- subset(ahv_Finanzierung, select=c(titel_kurz_d,annahme,p.svp,p.fdp,p.cvp,p.bdp))
+```
+
+# Haltung der Parteien durch Worte ersetzen
+```{r}
+ahv_finanzierungen_parteien$p.svp[ahv_finanzierungen_parteien$p.svp == "1"] <- "Ja-Parole"
+ahv_finanzierungen_parteien$p.svp[ahv_finanzierungen_parteien$p.svp == "2"] <- "Nein-Parole"
+ahv_finanzierungen_parteien$p.svp[ahv_finanzierungen_parteien$p.svp == "5"] <- "Der Akteur beschloss Stimmfreigabe"
+
+ahv_finanzierungen_parteien$p.fdp[ahv_finanzierungen_parteien$p.fdp == "1"] <- "Ja-Parole"
+ahv_finanzierungen_parteien$p.fdp[ahv_finanzierungen_parteien$p.fdp == "2"] <- "Nein-Parole"
+
+ahv_finanzierungen_parteien$p.cvp[ahv_finanzierungen_parteien$p.cvp == "1"] <- "Ja-Parole"
+ahv_finanzierungen_parteien$p.cvp[ahv_finanzierungen_parteien$p.cvp == "2"] <- "Nein-Parole"
+
+ahv_finanzierungen_parteien$p.bdp[ahv_finanzierungen_parteien$p.bdp == "1"] <- "Ja-Parole"
+ahv_finanzierungen_parteien$p.bdp[ahv_finanzierungen_parteien$p.bdp == "2"] <- "Nein-Parole"
+ahv_finanzierungen_parteien$p.bdp[ahv_finanzierungen_parteien$p.bdp == "9999"] <- "Organisation existiert nicht"
+```
+
+```{r}
+ggplot(ahv_finanzierungen_parteien) +
+ aes(x = annahme, y = titel_kurz_d, fill = p.svp) +
+ geom_tile(size = 1.2) +
+ scale_fill_manual(values = c(`Der Akteur beschloss Stimmfreigabe` = "grey", `Ja-Parole` = "tan2", 
+ `Nein-Parole` = "#0C4C8A")) +
+ labs(x = "xxx", y = "yyy", title = "Titel", fill = "Titel Label") +
+ theme_minimal() +
+ theme(plot.title = element_text(size = 15L, face = "bold", hjust = 0.5), axis.title.y = element_text(size = 12L, 
+ face = "bold"), axis.title.x = element_text(size = 12L, face = "bold"))
+
+```
+
+```{r}
+ggplot(ahv_finanzierungen_parteien) +
+  aes(x = annahme, y = titel_kurz_d, fill = p.fdp) +
+  geom_tile(size = 1.2) +
+  scale_fill_manual(
+    values = c(`Ja-Parole` = "tan2",
+    `Nein-Parole` = "#0C4C8A")
+  ) +
+  labs(
+    x = "xxx",
+    y = "yyy",
+    title = "Titel",
+    fill = "Titel Label"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+```{r}
+ggplot(ahv_finanzierungen_parteien) +
+  aes(x = annahme, y = titel_kurz_d, fill = p.bdp) +
+  geom_tile(size = 1.2) +
+  scale_fill_manual(
+    values = c(`Ja-Parole` = "tan2",
+    `Nein-Parole` = "#0C4C8A",
+    `Organisation existiert nicht` = "grey")
+  ) +
+  labs(x = "xxx", y = "yyy", title = "Titel", fill = "Titel") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  ) +
+  facet_wrap(vars(p.bdp))
+```
 
 
 
