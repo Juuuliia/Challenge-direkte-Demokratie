@@ -547,6 +547,100 @@ ggplot(ahv_finanzierungen_parteien) +
 
 
 
+ 
+ 
+ 
+
+```{r}
+jaParole <- subset(ahv_Finanzierung, select = c(titel_kurz_d, annahme, ja.lager))
+```
+```{r}
+esquisser()
+```
+
+
+
+# ja.lager als int speichern
+```{r}
+#jaParole$ja.lager <- as.factor(jaParole$ja.lager)
+```
+
+
+```{r}
+jaParole$ja.lager[jaParole$ja.lager > "50" ] <- "Mehr als 50%"
+jaParole$ja.lager[jaParole$ja.lager <= "50" ] <- "Weniger oder genau 50 %"
+```
+
+
+```{r}
+ggplot(jaParole) +
+  aes(x = ja.lager, y = titel_kurz_d, fill = annahme) +
+  geom_tile(size = 1.2) +
+  scale_fill_manual(
+    values = c(Abgelehnt = "#F8766D",
+    Angenommen = "#FF61C3")
+  ) +
+  labs(x = "ddd", y = "fff", title = "Titel", fill = "hdhdh") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+```{r}
+data_csv_nur01 <- subset(data_csv, annahme == 0 | annahme == 1)
+```
+
+```{r}
+data_csv_nur01_annahme <- subset(data_csv_nur01, select = c(annahme, ja.lager))
+```
+
+```{r}
+data_csv_nur01_annahme$ja.lager[data_csv_nur01_annahme$ja.lager >= "50" ] <- "50% oder mehr"
+data_csv_nur01_annahme$ja.lager[data_csv_nur01_annahme$ja.lager < "50" ] <- "Weniger als 50%"
+```
+
+```{r}
+data_csv_nur01_annahme$annahme[data_csv_nur01_annahme$annahme == "0" ] <- "Abgelehnt"
+data_csv_nur01_annahme$annahme[data_csv_nur01_annahme$annahme == "1" ] <- "Angenommen"
+```
+
+```{r}
+ggplot(data_csv_nur01_annahme) +
+  aes(x = annahme, fill = ja.lager) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(`50% oder mehr` = "tan2",
+    `Weniger als 50%` = "#0C4C8A")
+  ) +
+  labs(x = "xxx", y = "yyy", title = "Titel", fill = "Blabla") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    face = "bold",
+    hjust = 0.5),
+    axis.title.y = element_text(size = 12L,
+    face = "bold"),
+    axis.title.x = element_text(size = 12L,
+    face = "bold")
+  )
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
