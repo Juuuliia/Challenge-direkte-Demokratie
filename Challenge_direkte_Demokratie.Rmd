@@ -440,7 +440,8 @@ ggplot(ablehnung) +
     face = "bold"),
     axis.title.x = element_text(size = 12L,
     face = "bold")
-  )
+  ) + 
+  theme(text = element_text(size = 20)) 
 ```
 
 
@@ -554,9 +555,7 @@ ggplot(ahv_finanzierungen_parteien) +
 ```{r}
 jaParole <- subset(ahv_Finanzierung, select = c(titel_kurz_d, annahme, ja.lager))
 ```
-```{r}
-esquisser()
-```
+
 
 
 
