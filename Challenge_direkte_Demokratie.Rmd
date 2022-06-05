@@ -249,12 +249,9 @@ ggplot(ablehnung) +
   theme_minimal() +
   theme(
     plot.title = element_text(size = 15L,
-    face = "bold",
     hjust = 0.9),
-    axis.title.y = element_text(size = 12L,
-    face = "bold"),
-    axis.title.x = element_text(size = 12L,
-    face = "bold")
+    axis.title.y = element_text(size = 11L),
+    axis.title.x = element_text(size = 11L),
   ) + 
   theme(text = element_text(size = 15)) 
 ```         
@@ -318,135 +315,7 @@ finanzierungen_gekuerzt$annahme[finanzierungen_gekuerzt$annahme == "1"] <- "Ange
 <br>
 <br>
 
-# Grafik 8: Analyse der Haltung des Bundesrates
-
-Plot erstellen: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Bundesrates
-```{r}
-ggplot(finanzierungen_gekuerzt) +
-  aes(x = annahme, fill = br.pos) +
-  geom_bar() +
-  scale_fill_manual(
-    values = c(Ablehnend = "#0C4C8A",
-    Befürwortend = "tan2",
-    `Enthaltend` = "grey")
-  ) +
-  labs(
-    x = "Entscheidung des Volkes",
-    y = "Anzahl Abstimmungen",
-    title = "Analyse der Haltung des Bundesrates",
-    fill = "Position Bundesrat"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 15L,
-    face = "bold",
-    hjust = 0.5),
-    axis.title.y = element_text(size = 11L),
-    axis.title.x = element_text(size = 11L)
-  ) +
-  facet_wrap(vars(d1e1))
-```
-
-<br>
-<br>
-
-# Grafik 9: Analyse der Haltung des Parlaments
-
-Plot erstellen: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Parlaments
-```{r}
-ggplot(finanzierungen_gekuerzt) +
-  aes(x = annahme, fill = bv.pos) +
-  geom_bar() +
-  scale_fill_manual(
-    values = c(Ablehnend = "#0C4C8A",
-    Befürwortend = "tan2")
-  ) +
-  labs(
-    x = "Entscheidung des Volkes",
-    y = "Anzahl Abstimmungen",
-    title = "Analyse der Haltung des Parlaments",
-    fill = "Position Parlament"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 15L,
-    face = "bold",
-    hjust = 0.5),
-    axis.title.y = element_text(size = 11L),
-    axis.title.x = element_text(size = 11L)
-  ) +
-  facet_wrap(vars(d1e1))
-```
-<br>
-<br>
-
-# Grafik 9.1: Analyse der Haltung des Nationalrates
-
-Plot: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Nationalrats
-```{r}
-ggplot(finanzierungen_gekuerzt) +
-  aes(x = annahme, fill = nr.pos) +
-  geom_bar() +
-  scale_fill_manual(
-    values = c(Ablehnend = "#0C4C8A",
-    Befürwortend = "tan2")
-  ) +
-  labs(
-    x = "Entscheidung des Volkes",
-    y = "Anzahl Abstimmungen",
-    title = "Analyse der Haltung des Nationalrates",
-    fill = "Position Nationalrat"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 15L,
-    face = "bold",
-    hjust = 0.5),
-    axis.title.y = element_text(size = 11L),
-    axis.title.x = element_text(size = 11L),
-  ) +
-  facet_wrap(vars(d1e1))
-```
-
-<br>
-<br>
-
-# Grafik 9.2: Analyse der Haltung des Ständerates
-```{r}
-ggplot(finanzierungen_gekuerzt) +
-  aes(x = annahme, fill = sr.pos) +
-  geom_bar() +
-  scale_fill_manual(
-    values = c(Ablehnend = "#0C4C8A",
-    Befürwortend = "tan2")
-  ) +
-  labs(x = "Entscheidung des Volkes", y = "Anzahl Abstimmungen", title =  "Analyse der Haltung des Nationalrates", fill = "Position Ständerat") +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 15L,
-    face = "bold",
-    hjust = 0.5),
-    axis.title.y = element_text(size = 11L),
-    axis.title.x = element_text(size = 11L)
-  ) +
-  facet_wrap(vars(d1e1))
-```
-#### Die Grafik 9.1 und 9.2 haben wir nicht für den Blog verwendet, da sie genau das gleiche aussagen wie die Grafik 9.
-
-Kontrollieren, ob Initiative nie angenommen, wenn Bundesrat dagegen. Wir wollten dies überprüfen, da wir uns dies nicht vorstellen konnten. Bei unseren untersuchten Abstimmungen ist dies jedoch tatsächlich der Fall.
-```{r}
-bundesratDagegen <- filter(finanzierungen, br.pos == 2)
-```
-```{r}
-test_finanzierungen <- bundesratDagegen %>%
-  group_by(annahme) %>%
-  count()
-```
-
-<br>
-<br>
-
-# Grafik 10: Wähleranteil untersuchen
+# Grafik 8: Wähleranteil untersuchen
 Data Frame erstellen
 ```{r}
 jaLager<- subset(ahv_Finanzierung, select = c(titel_kurz_d, annahme, ja.lager))
@@ -480,7 +349,156 @@ ggplot(jaLager) +
 <br>
 <br>
 
-# Grafik 11: Ergebnisse der Initiativen nach Rechtsform
+# Grafik 9: 
+```{r}
+JaLager = as.numeric(daten_ohneNA$ja.lager)
+
+ggplot(daten_ohneNA, aes(JaLager, daten_ohneNA$annahme)
+) +
+  geom_point()+
+  labs(x = "Wähleranteile der unterstützenden Parteien in Prozent", y = "Ergebnis", title = "Einfluss der Wählerinnen und Wähler der Parteien")+
+  theme_minimal()+
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 11L),
+    axis.title.x = element_text(size = 11L)
+  )+
+  facet_wrap(~rechtsform)
+```
+
+
+
+# Grafik 10: Analyse der Haltung des Bundesrates
+
+Plot erstellen: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Bundesrates
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = annahme, fill = br.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2",
+    `Enthaltend` = "grey")
+  ) +
+  labs(
+    x = "Entscheidung des Volkes",
+    y = "Anzahl Abstimmungen",
+    title = "Analyse der Haltung des Bundesrates",
+    fill = "Position Bundesrat"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 11L),
+    axis.title.x = element_text(size = 11L)
+  ) +
+  facet_wrap(vars(d1e1))
+```
+
+<br>
+<br>
+
+# Grafik 11: Analyse der Haltung des Parlaments
+
+Plot erstellen: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Parlaments
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = annahme, fill = bv.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2")
+  ) +
+  labs(
+    x = "Entscheidung des Volkes",
+    y = "Anzahl Abstimmungen",
+    title = "Analyse der Haltung des Parlaments",
+    fill = "Position Parlament"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 11L),
+    axis.title.x = element_text(size = 11L)
+  ) +
+  facet_wrap(vars(d1e1))
+```
+<br>
+<br>
+
+# Grafik 11.1: Analyse der Haltung des Nationalrates
+
+Plot: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Nationalrats
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = annahme, fill = nr.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2")
+  ) +
+  labs(
+    x = "Entscheidung des Volkes",
+    y = "Anzahl Abstimmungen",
+    title = "Analyse der Haltung des Nationalrates",
+    fill = "Position Nationalrat"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 11L),
+    axis.title.x = element_text(size = 11L),
+  ) +
+  facet_wrap(vars(d1e1))
+```
+
+<br>
+<br>
+
+# Grafik 11.2: Analyse der Haltung des Ständerates
+```{r}
+ggplot(finanzierungen_gekuerzt) +
+  aes(x = annahme, fill = sr.pos) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Ablehnend = "#0C4C8A",
+    Befürwortend = "tan2")
+  ) +
+  labs(x = "Entscheidung des Volkes", y = "Anzahl Abstimmungen", title =  "Analyse der Haltung des Nationalrates", fill = "Position Ständerat") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 15L,
+    hjust = 0.5),
+    axis.title.y = element_text(size = 11L),
+    axis.title.x = element_text(size = 11L)
+  ) +
+  facet_wrap(vars(d1e1))
+```
+#### Die Grafik 9.1 und 9.2 haben wir nicht für den Blog verwendet, da sie genau das gleiche aussagen wie die Grafik 9.
+
+Kontrollieren, ob Initiative nie angenommen, wenn Bundesrat dagegen. Wir wollten dies überprüfen, da wir uns dies nicht vorstellen konnten. Bei unseren untersuchten Abstimmungen ist dies jedoch tatsächlich der Fall.
+```{r}
+bundesratDagegen <- filter(finanzierungen, br.pos == 2)
+```
+```{r}
+test_finanzierungen <- bundesratDagegen %>%
+  group_by(annahme) %>%
+  count()
+```
+
+<br>
+<br>
+
+
+
+<br>
+<br>
+
+# Grafik 12: Ergebnisse der Initiativen nach Rechtsform
 
 Spaltennamen angepasst
 ```{r}
@@ -516,7 +534,6 @@ ggplot(daten_ohneNA, aes(Jahre, daten_ohneNA$rechtsform)
   theme_minimal()+
   theme(
     plot.title = element_text(size = 15L,
-    face = "bold",
     hjust = 0.5),
     axis.title.y = element_text(size = 11L),
     axis.title.x = element_text(size = 11L)
@@ -525,7 +542,7 @@ ggplot(daten_ohneNA, aes(Jahre, daten_ohneNA$rechtsform)
 <br>
 <br>
 
-# Grafik 12: Wie der Tenor der Medien gegenüber den Initiativen war
+# Grafik 13: Wie der Tenor der Medien gegenüber den Initiativen war
 ```{r}
 Mediaton = as.numeric(daten_ohneNA$mediaton.tot)
 ggplot(daten_ohneNA, aes(Mediaton, daten_ohneNA$rechtsform)
@@ -535,11 +552,10 @@ ggplot(daten_ohneNA, aes(Mediaton, daten_ohneNA$rechtsform)
     values = c('Abgelehnt' = "#0C4C8A",
     'Angenommen' = "tan2")
   ) +
-  labs(x = "Medienton", y = "Rechtsform", title = "Wie der Tenor der Medien gegenüber den Initiativen war")+
+  labs(x = "Medienton", y = "Rechtsform", title = "Der Tenor der Medien gegenüber den Initiativen")+
   theme_minimal()+
   theme(
     plot.title = element_text(size = 15L,
-    face = "bold",
     hjust = 0.5),
     axis.title.y = element_text(size = 11L),
     axis.title.x = element_text(size = 11L)
@@ -549,7 +565,7 @@ ggplot(daten_ohneNA, aes(Mediaton, daten_ohneNA$rechtsform)
 <br>
 <br>
 
-# Grafik 13: Anzahl befürwortende Inserate
+# Grafik 14: Anzahl befürwortende Inserate
 ```{r}
 Inserate = as.numeric(daten_ohneNA$inserate.ja)
 
@@ -560,12 +576,11 @@ ggplot(daten_ohneNA, aes(Inserate, daten_ohneNA$rechtsform)
     values = c('Abgelehnt' = "#0C4C8A",
     'Angenommen' = "tan2")
   ) +
-  labs(x = "Anzahl der Inserate", y = "", title = "Anzahl befürwortende Inserate")+
+  labs(x = "Anzahl der Inserate", y = "", title = "Anzahl befürwortender Inserate und das Abstimmungserbenis")+
   theme_minimal()+
   theme(
     plot.title = element_text(size = 15L,
-    face = "bold",
-    hjust = 0.5),
+    hjust = 1),
     axis.title.y = element_text(size = 11L),
     axis.title.x = element_text(size = 11L),
   )+
@@ -574,7 +589,7 @@ ggplot(daten_ohneNA, aes(Inserate, daten_ohneNA$rechtsform)
 <br>
 <br>
 
-# Grafik 14: Anzahl ablehnende Inserate im Vergleich zum Ergebnis der Initiativen
+# Grafik 15: Anzahl ablehnende Inserate im Vergleich zum Ergebnis der Initiativen
 ```{r}
 Inserate = as.numeric(daten_ohneNA$inserate.nein)
 
@@ -585,12 +600,11 @@ ggplot(daten_ohneNA, aes(Inserate, daten_ohneNA$rechtsform)
     values = c('Abgelehnt' = "#0C4C8A",
     'Angenommen' = "tan2")
   ) +
-  labs(x = "Anzahl der Inserate", y = "Rechtsform", title = "Anzahl ablehnende Inserate im Vergleich zum Ergebnis der Initiativen")+
+  labs(x = "Anzahl der Inserate", y = "Rechtsform", title = "Anzahl ablehnender Inserate und das Abstimmungsergebnis")+
   theme_minimal()+
   theme(
     plot.title = element_text(size = 15L,
-    face = "bold",
-    hjust = 0.5),
+    hjust = 1.7),
     axis.title.y = element_text(size = 11L),
     axis.title.x = element_text(size = 11L),
   )+
@@ -605,9 +619,9 @@ Data Frame anpassen
 ```{r}
 data_csv$rechtsform[data_csv$rechtsform == "1"] <- "Obligatorisches Referendum"
 data_csv$rechtsform[data_csv$rechtsform == "2"] <- "Fakultatives Referendum"
-data_csv$rechtsform[data_csv$rechtsform == "3"] <- "Volksinitiative"
-data_csv$rechtsform[data_csv$rechtsform == "4"] <- "Direkter Gegenentwurf einer Volksinitiative"
 data_csv$rechtsform[data_csv$rechtsform == "5"] <- "Stichfrage"
+data_csv$rechtsform[data_csv$rechtsform == "3"] <- "Volksinitiative"
+data_csv$rechtsform[data_csv$rechtsform == "4"] <- "Gegenentwurf Volksinitiative"
 ```
 
 Plot erstellen
@@ -616,21 +630,21 @@ ggplot(data_csv) +
   aes(x = rechtsform, fill = rechtsform) +
   geom_bar() +
   scale_fill_manual(
-    values = c(`Direkter Gegenentwurf einer Volksinitiative` = "#A50026",
-    `Fakultatives Referendum` = "#F88D51",
+    values = c(`Fakultatives Referendum` = "#A50026"  ,
+     `Gegenentwurf Volksinitiative` ="#F88D51",
     `Obligatorisches Referendum` = "#E6D386",
-    Stichfrage = "#8FC3DD",
-    Volksinitiative = "#313695")
+    `Stichfrage` = "#8FC3DD",
+    `Volksinitiative` = "#313695")
   ) +
-  labs(y = "Anzahl Initiativen", fill = "Rechtsform") +
+  labs(y = "Anzahl Initiativen", x="Rechtsform", fill = "Rechtsform") +
   theme_minimal() +
   theme(
-    axis.title.y = element_text(size = 12L,
-    face = "bold")
+    axis.title.y = element_text(size = 11L)
   )+
     labs(
     title = "Rechtsform der Initiativen seit 1848")+
-  theme(plot.title = element_text(size = 15L, hjust = 0.5))
+  theme(plot.title = element_text(size = 15L, hjust = 0.5))+
+    theme(text = element_text(size = 11))
 ```
 
 <br>
@@ -666,9 +680,7 @@ ggplot(initiativen) +
   theme_minimal() +
   theme(
     plot.title = element_text(size = 15L,
-    face = "bold",
     hjust = 0.5),
-    axis.title.y = element_text(size = 12L,
-    face = "bold")
+    axis.title.y = element_text(size = 11L),
   )
 ```
