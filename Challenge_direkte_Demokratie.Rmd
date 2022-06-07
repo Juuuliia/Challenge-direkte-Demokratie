@@ -539,7 +539,7 @@ ggplot(daten_ohneNA, aes(Jahre, daten_ohneNA$rechtsform)
 <br>
 <br>
 
-# Grafik 13: Der Tenor der Medien gegenüber den Initiativen
+# Grafik 13: Der Ton der Medien gegenüber den Initiativen
 ```{r}
 Mediaton = as.numeric(daten_ohneNA$mediaton.tot)
 ggplot(daten_ohneNA, aes(Mediaton, daten_ohneNA$rechtsform)
@@ -549,7 +549,7 @@ ggplot(daten_ohneNA, aes(Mediaton, daten_ohneNA$rechtsform)
     values = c('Abgelehnt' = "#0C4C8A",
     'Angenommen' = "tan2")
   ) +
-  labs(x = "Medienton", y = "Rechtsform", title = "Der Tenor der Medien gegenüber den Initiativen")+
+  labs(x = "Medienton", y = "Rechtsform", title = "Der Ton der Medien gegenüber den Initiativen")+
   theme_minimal()+
   theme(
     plot.title = element_text(size = 15L,
