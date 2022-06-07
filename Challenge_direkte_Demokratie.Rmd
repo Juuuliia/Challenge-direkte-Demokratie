@@ -3,19 +3,19 @@ title: "Challenge: Direkte Demokratie"
 output: html_notebook
 ---
 
-***Gruppe: Chantal und Julia***
+***Gruppe: Chantal Gisler und Julia Lobatón***
                                         
                                         
 ## Fragestellung: <b>
-Wieso gestalltet sich die Finanzierung der AHV so schwierig?
+Wieso gestaltet sich die zukünftige Finanzierung der AHV so schwierig?
 
 ## Daten: <b>
-Wir verwendeten die Daten von swissvotes.ch (https://swissvotes.ch/page/dataset)
+Wir verwendeten das Datenset von swissvotes.ch (https://swissvotes.ch/page/dataset)
 
 <br>
 <br>
 
-Packete importieren
+Packete importieren und Librarys öffnen
 ```{r}
 library(esquisse)
 library(ggplot2)
@@ -32,7 +32,7 @@ Daten einlesen
 data_csv <- read.csv2("DatensatzAbstimmungen.csv", na = "NA")
 ```
 
-Datum Spalte zu Datentyp "date" ändern
+Datum Spalte zu Datentyp "date" ändern, damit es als Datum erkannt wird
 ```{r}
 data_csv <- data_csv%>%
   mutate(datum=as.Date(datum, "%d.%m.%Y"))
@@ -44,7 +44,7 @@ Datensatz nur mit AHV Abstimmungen erstellen
 ahv <- subset(data_csv, anr == 99 |anr == 101 | anr == 115 | anr == 144 | anr == 280 | anr == 281 |anr == 352 |anr == 401 | anr == 423 | anr == 444 | anr == 469 |anr == 481 |anr == 489.1   | anr == 489.2  | anr == 507 | anr == 508 | anr == 523 |anr == 536 |anr == 594 | anr == 606 | anr == 614 |anr == 627 |anr == 401 |anr == 422)
 ```
 
-Bei AHV Datensatz Spalte annahme 1,0 durch "Worte"Abglehnt" und "Angenommen" ersetzen
+Beim AHV-Datensatz wird Spalte annahme 1; 0 durch die Begriffe "Abglehnt" und "Angenommen" ersetzt
 ```{r}
 ahv$annahme[ahv$annahme == "0"] <- "Abgelehnt"
 ahv$annahme[ahv$annahme == "1"] <- "Angenommen"
@@ -131,7 +131,7 @@ d1e2_12.5 <- subset(d1e1_3_oder_12, d1e2 == 12.5)
 
 # Grafik 4: Abstimmungsergebnisse im Bereich der AHV-Finanzierung
                                                   
-Data Frame mit AHV-Abstimmungen im Bereich Finanzierung erstellen (diese elf, welche wir gemäss unserer Recherche bei der Grafik 1 dem Oberthema Finanzierung zugeteilt haben )
+Data Frame mit AHV-Abstimmungen im Bereich Finanzierung erstellen (diese 11, die wir gemäss unserer Recherche bei der Grafik 1 dem Oberthema Finanzierung zugeteilt haben)
 ```{r}
 ahv_Finanzierung <- subset(ahv, anr==401 |anr == 481 | anr == 489.1 | anr == 489.2 | anr == 508 | anr == 523 | anr == 594 | anr == 606 | anr == 614 | anr == 627)
 ```
@@ -261,7 +261,7 @@ ggplot(ablehnung) +
 
 # Überprüfung der Theorien
                                                              
-Data Frame mit Medien- Militär- und AHV- Finanzierungsabstimmungen erstellen
+Data Frame mit Medien- Militär- und AHV-Finanzierungsabstimmungen erstellen
 ```{r}
 finanzierungen <- subset(data_csv, anr == 16 | anr == 18 | anr == 86 |anr == 131 | anr == 161 | anr == 162 |anr == 181 |  anr == 393 | anr == 401 |anr == 481 |anr == 489.1  | anr == 489.2 | anr == 508 | anr == 523 |anr == 594 | anr == 606 | anr == 614 |anr == 627 |  anr == 427 | anr == 471 | anr == 584 | anr == 635|  anr == 595 | anr == 617 | anr == 654)
 ```
@@ -281,32 +281,32 @@ finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "7"] <- "AHV"
 finanzierungen_gekuerzt$d1e1[finanzierungen_gekuerzt$d1e1 == "4"] <- "AHV"
 ```
 
-Bei Position Bundesrat Zahlen mit Wörtern ersetzen
+Die Position des Bundesrates ist aktuell in Zahlen, sie wird mit Wörtern ersetzt
 ```{r}
 finanzierungen_gekuerzt$br.pos[finanzierungen_gekuerzt$br.pos == "1"] <- "Befürwortend"
 finanzierungen_gekuerzt$br.pos[finanzierungen_gekuerzt$br.pos == "2"] <- "Ablehnend"
 finanzierungen_gekuerzt$br.pos[finanzierungen_gekuerzt$br.pos == "."] <- "Enthaltend"
 ```
 
-Bei Position Parlament Zahlen mit Wörtern ersetzen
+Die Position des Parlaments ist aktuell in Zahlen, sie wird mit Wörtern ersetzt
 ```{r}
 finanzierungen_gekuerzt$bv.pos[finanzierungen_gekuerzt$bv.pos == "1"] <- "Befürwortend"
 finanzierungen_gekuerzt$bv.pos[finanzierungen_gekuerzt$bv.pos == "2"] <- "Ablehnend"
 ```
 
-Bei Position Nationalrat Zahlen mit Wörtern ersetzen
+Die Position des Nationalrates ist aktuell in Zahlen, sie wird mit Wörtern ersetzt
 ```{r}
 finanzierungen_gekuerzt$nr.pos[finanzierungen_gekuerzt$nr.pos == "1"] <- "Befürwortend"
 finanzierungen_gekuerzt$nr.pos[finanzierungen_gekuerzt$nr.pos == "2"] <- "Ablehnend"
 ```
 
-Bei Position Ständerat Zahlen mit Wörtern ersetzen
+Die Position des Ständerates ist aktuell in Zahlen, sie wird mit Wörtern ersetzt
 ```{r}
 finanzierungen_gekuerzt$sr.pos[finanzierungen_gekuerzt$sr.pos == "1"] <- "Befürwortend"
 finanzierungen_gekuerzt$sr.pos[finanzierungen_gekuerzt$sr.pos == "2"] <- "Ablehnend"
 ```
 
-0 und 1 durch "Abgelehnt" und "Angenommen" ersetzen
+0 und 1 durch die Begriffe "Abgelehnt" und "Angenommen" ersetzen
 ```{r}
 finanzierungen_gekuerzt$annahme[finanzierungen_gekuerzt$annahme == "0"] <- "Abgelehnt"
 finanzierungen_gekuerzt$annahme[finanzierungen_gekuerzt$annahme == "1"] <- "Angenommen"
@@ -321,12 +321,12 @@ Data Frame erstellen
 jaLager<- subset(ahv_Finanzierung, select = c(titel_kurz_d, annahme, ja.lager))
 ```
 
-Die Zahl in Spalte ja Lager als numeric speichern
+Die Zahl in Spalte Ja-Lager als nummerischen Wert speichern
 ```{r}
 jaLager$ja.lager <- as.numeric(jaLager$ja.lager)
 ```
 
-Plot: Wähleranteil der Parteien die die Initiative unterstützen
+Plot: Wähleranteil der Parteien, die die Initiative unterstützen
 ```{r}
 ggplot(jaLager) +
   aes(x = ja.lager, y = titel_kurz_d, fill = annahme) +
@@ -365,7 +365,7 @@ daten_umbenannt <- data_csv %>%
     rechtsform == 5 ~ "Stichfrage")))
 ```
 
-Nur angelehnte und angenommene Initiativen beachtet
+Nur angelehnte und angenommene Initiativen beachtet, damit keine NAs auftauchen, da der Datensatz die drei Initiativen vom 15.5.2022 noch nicht gewesen sind, als wir den Datensatz heruntergeladen haben.
 ```{r}
 daten_ohneNA <- filter(daten_umbenannt, annahme == "Abgelehnt" | annahme == "Angenommen")
 ```
@@ -420,9 +420,9 @@ ggplot(finanzierungen_gekuerzt) +
 <br>
 <br>
 
-# Grafik 11: Analyse der Haltung des Parlaments
+# Grafik 11: Analyse der Haltung des Parlaments (besteht aus Nationalrat und Ständerat)
 
-Plot erstellen: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Parlaments
+Plot erstellen: Abstimmungen im Bereich AHV, Medien, Militär in Verbindung mit Finanzierung und ob diese angenommen oder abgelehnt wurden und die Position des Parlaments (besteht aus National- und Ständerat)
 ```{r}
 ggplot(finanzierungen_gekuerzt) +
   aes(x = annahme, fill = bv.pos) +
@@ -498,9 +498,9 @@ ggplot(finanzierungen_gekuerzt) +
   ) +
   facet_wrap(vars(d1e1))
 ```
-#### Die Grafik 9.1 und 9.2 haben wir nicht für den Blog verwendet, da sie genau das gleiche aussagen wie die Grafik 9.
+#### Die Grafik 9.1 und 9.2 haben wir nicht für den Blog verwendet, da sie genau das Gleiche aussagen, wie die Grafik 9.
 
-Kontrollieren, ob Initiative nie angenommen, wenn Bundesrat dagegen. Wir wollten dies überprüfen, da wir uns dies nicht vorstellen konnten. Bei unseren untersuchten Abstimmungen ist dies jedoch tatsächlich der Fall.
+Kontrollieren, ob Initiative nie angenommen wurde, wenn Bundesrat dagegen war. Wir wollten dies überprüfen, da wir uns dies nicht vorstellen konnten. Bei unseren untersuchten Abstimmungen ist dies jedoch tatsächlich der Fall.
 ```{r}
 bundesratDagegen <- filter(finanzierungen, br.pos == 2)
 ```
@@ -539,7 +539,7 @@ ggplot(daten_ohneNA, aes(Jahre, daten_ohneNA$rechtsform)
 <br>
 <br>
 
-# Grafik 13: Der Ton der Medien gegenüber den Initiativen
+# Grafik 13: Der Ton der Medien gegenüber den Initiativen. Das heisst, ob die Medien positiv oder negativ über eine Initiative berichtet haben.
 ```{r}
 Mediaton = as.numeric(daten_ohneNA$mediaton.tot)
 ggplot(daten_ohneNA, aes(Mediaton, daten_ohneNA$rechtsform)
@@ -573,7 +573,7 @@ ggplot(daten_ohneNA, aes(Inserate, daten_ohneNA$rechtsform)
     values = c('Abgelehnt' = "#0C4C8A",
     'Angenommen' = "tan2")
   ) +
-  labs(x = "Anzahl der Inserate", y = "", title = "Anzahl befürwortender Inserate und das Abstimmungserbenis")+
+  labs(x = "Anzahl der Inserate", y = "", title = "Anzahl befürwortender Inserate und das Abstimmungsergebnis")+
   theme_minimal()+
   theme(
     plot.title = element_text(size = 15L,
@@ -611,7 +611,7 @@ ggplot(daten_ohneNA, aes(Inserate, daten_ohneNA$rechtsform)
 <br>
 <br>
 
-# Grafik 1 (Demokratie): Übersicht in welcher Rechtsform wie oft abgestimmt wurde seit 1848
+# Grafik 1 (kommt auf die Seite Über die direkte Demokratie): Übersicht in welcher Rechtsform wie oft abgestimmt wurde seit 1848
 Data Frame anpassen
 ```{r}
 data_csv$rechtsform[data_csv$rechtsform == "1"] <- "Obligatorisches Referendum"
@@ -647,13 +647,13 @@ ggplot(data_csv) +
 <br>
 <br>
 
-# Grafik 2 (Demokratie): Alle Volksinitiativen verteilt auf die Jahre seit 1848 und ob diese angenommen oder abgelehnt wurden
+# Grafik 2 (kommt auf die Seite Über die direkte Demokratie): Alle Volksinitiativen verteilt auf die Jahre seit 1848 und ob diese angenommen oder abgelehnt wurden
 Data Frame kürzen
 ```{r}
 initiativen <-  subset(data_csv, rechtsform == "Volksinitiative")
 ```
 
-Bei AHV Datensatz Spalte annahme 1,0 durch "angenommen" und "abgelehnt" ersetzen
+Beim AHV-Datensatz Spalte annahme 1; 0 durch "angenommen" und "abgelehnt" ersetzen
 ```{r}
 initiativen$annahme[initiativen$annahme == "0"] <- "Abgelehnt"
 initiativen$annahme[initiativen$annahme == "1"] <- "Angenommen"
